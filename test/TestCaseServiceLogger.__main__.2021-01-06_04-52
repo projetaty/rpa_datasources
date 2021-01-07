@@ -1,0 +1,9 @@
+Testing... Log level INFO set.
+Reading file ../log/tests/test_service.log
+Common base class for all non-exit exceptions.
+Traceback (most recent call last):
+  File "/opt/projetos/Django/rpa_datasources/test/TestMain.py", line 16, in setUp
+    self.assertTrue(len(content) == 0, "Log file is recording...")
+  File "/usr/lib/python3.7/unittest/case.py", line 692, in assertTrue
+    raise self.failureException(msg)
+AssertionError: False is not true : Log file is recording...
