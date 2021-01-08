@@ -123,6 +123,9 @@ class TestXmlContentHandler(ContentHandler):
                     self.xmlDS[self.rootTag] = attrs._attrs
                     #print(self.xmlDS, end="\n\n")
                 else:
+                    """
+                    @TODO: Fix the programming in exception while solving pending methods
+                    """
                     self.reservedTags.append(name)
                     try:
                         self.xmlDS[self.rootTag][name] = attrs._attrs
