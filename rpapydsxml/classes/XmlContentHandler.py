@@ -4,8 +4,6 @@
 """
 @reference: https://docs.python.org/3/library/xml.sax.handler.html#xml.sax.handler.ContentHandler
 """
-
-import unittest2
 import logging
 import xml.sax
 from xml.sax import ContentHandler
@@ -13,36 +11,18 @@ from logger_multi_modules.SingleLogger import SingleLogger
 import json
 
 
-class TestCase(unittest2.TestCase):
-    
-    def setUp(self):
-        
-        try:
-            pass
-        except:
-            raise Exception
-    
-    
-    def testReadDataSource(self):
-        try:
-            self.xmlObj = TestXmlContentHandler()
-            self.xmlObj.readDataSource("../../datasource/xml/", "movies.xml")
-        except:
-            raise Exception
-    
-    
-    
-    def tearDown(self):
-        unittest2.TestCase.tearDown(self)
 
-
-
-class TestXmlContentHandler(ContentHandler):
+class XmlContentHandler(ContentHandler):
     
     
     def __init__(self):
         try:
-            print("TestXmlContentHandler objeto criado")
+            print("XmlContentHandler objeto criado")
+            self.arrayDict = []
+            self.xmlDS = {}
+            self.reservedTags = []
+            self.movieInfo = []
+            self.rootTag = ""
         except:
             raise Exception
     
@@ -80,12 +60,7 @@ class TestXmlContentHandler(ContentHandler):
     
     def readDataSource(self, filePath:str, fileName:str) -> str:
         try:
-            self.arrayDict = []
-            self.xmlDS = {}
-            self.reservedTags = []
-            self.movieInfo = []
-            self.rootTag = ""
-            print("TestXmlContentHandler readDataSource() acessado")
+            print("XmlContentHandler readDataSource() acessado")
             parser = xml.sax.make_parser()
             
             # turn off namepsaces
@@ -115,7 +90,7 @@ class TestXmlContentHandler(ContentHandler):
         try:
             self.rootTag = self.__getXmlRootTagName("../../datasource/xml/", "movies.xml")
             if len(attrs._attrs).__gt__(0):
-                print("TestXmlContentHandler ContentHandler.startElement() acessado")
+                print("XmlContentHandler ContentHandler.startElement() acessado")
                 print("Parameter name value: %s" %name, sep=" | ")
                 print("Parameter attrs value: %s" %attrs._attrs)
                 
@@ -145,7 +120,7 @@ class TestXmlContentHandler(ContentHandler):
         @author: Sandro Regis Cardoso | Software Eng.
         """
         try:
-            print("TestXmlContentHandler ContentHandler.endElement() acessado")
+            print("XmlContentHandler ContentHandler.endElement() acessado")
             print("Parameter tag value: %s" %tag, end="\n\n")
             childTag = self.__getXmlNestedTagName("../../datasource/xml/", "movies.xml")
             if tag not in self.reservedTags:
@@ -158,18 +133,19 @@ class TestXmlContentHandler(ContentHandler):
                 #print(self.xmlDS, end="\n\n")
             
             if tag.__eq__(self.__getLastXmlNestedTag()) and self.xmlDS not in self.arrayDict:
-                #self.arrayDict.append(self.xmlDS)
+                
                 """
                 @TODO: Implement programming to get path and file name related to source file
                 @author:  Sandro Regis Cardoso | Software Eng.
                 """
-                with open("%s%s" %("../../queue/", "movies.json"), "a", encoding="utf-8") as jf:
+                self.arrayDict.append(self.xmlDS)
+                """with open("%s%s" %("../../queue/", "movies.json"), "a", encoding="utf-8") as jf:
                     jf.write(json.dumps(self.xmlDS))
-                    jf.write(",")
-                    jf.close()
+                    jf.close()"""
                     
-            """if tag.__eq__(self.rootTag):
-                self.__openJsonFile("../../queue/", "movies.json")"""
+            if tag.__eq__(self.rootTag):
+                print(self.arrayDict)
+                #self.__openJsonFile("../../queue/", "movies.json")
         except:
             raise Exception
     
@@ -178,7 +154,7 @@ class TestXmlContentHandler(ContentHandler):
     def characters(self, content):
         try:
             if len(content.strip()).__gt__(0):
-                print("TestXmlContentHandler ContentHandler.characters() acessado")
+                print("XmlContentHandler ContentHandler.characters() acessado")
                 print("Parameter content value: %s" %content, end="\n\n")
                 self.movieInfo.append(content)
         except:
@@ -196,12 +172,8 @@ class TestXmlContentHandler(ContentHandler):
             raise Exception
 
 
-
-
-if __name__ == '__main__':
-    unittest2.main()
-
-
+objxml = XmlContentHandler()
+objxml.readDataSource("../../datasource/xml/", "movies.xml")
 
 
 
