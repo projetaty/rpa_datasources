@@ -12,6 +12,14 @@ class TestCase(unittest.TestCase):
     
     def testProgramXmlHandler(self):
         
+        class TestJsonQueue(object):
+            QUEUE = {}
+            def addData(self, queueData : dict):
+                try:
+                    pass
+                except:
+                    raise Exception
+        
         class TestXmlContentHandler(ContentHandler):
             
             def __init__(self):
