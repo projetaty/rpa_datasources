@@ -1,14 +1,14 @@
 #!/bin/bash
 
 ### BEGIN INIT INFO
-# Provides:             Notify folder event service
+# Provides:             Notify inbound folder event service
 # Required-Start:       $remote_fs $syslog
 # Required-Stop:        $remote_fs $syslog
 # Should-Start:         $network
 # Should-Stop:          $network
 # Default-Start:        2 3 4 5
 # Default-Stop:         0 1 6
-# Short-Description:    Controle de atualizações do software
+# Short-Description:    Script part of single RPA
 # Author:          		Sandro Regis Cardoso | Software Eng.
 ### END INIT INFO
 
@@ -20,7 +20,9 @@ dir_inbound=$parent_dir/inbound
 inotify=/usr/bin/inotifywait
 actions=CREATE,MOVED_TO,DELETE
 xmlfile="xml"
+
 set -e
+
 if ! [[ -e $bash_log_dir ]]
 	then
 		mkdir -p $bash_log_dir;
@@ -30,14 +32,13 @@ if ! [[ -e $log_file ]]
 		touch $log_file
 fi
 
-monitor() {
+#TODO: Test multiples files inbounding
+inbound_monitor() {
 	while $inotify --recursive --event $actions "$dir_inbound"
 		do
 			sleep 3
 			file_name=$(ls $dir_inbound)
-			echo "MY FILE NAME $file_name"
 			file_extension=${file_name##*.}
-			echo "MY FILE EXTENSION $file_extension"
 			if [ $file_extension == $xmlfile ]
 				then
 					echo "Action : Call parser to $file_extension file"
@@ -46,15 +47,7 @@ monitor() {
 		done
 }
 
-monitor &
-
-
-
-
-
-
-
-
+inbound_monitor &
 
 
 
