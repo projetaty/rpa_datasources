@@ -54,7 +54,7 @@ inbound_monitor() {
 							rm -f $dir_inbound"/"$file_name;
 					
 					else
-						echo "Action : Send mail file extension $file_extension not supported."
+						echo "Action : Send push and mail file extension $file_extension not supported."
 					fi
 				done
 		done
