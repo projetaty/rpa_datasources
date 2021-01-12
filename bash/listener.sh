@@ -11,6 +11,7 @@ current_dir=${PWD##*/}
 bash_log_dir=$parent_dir/log/bash
 log_file=$bash_log_dir/datasource_notify.log
 dir_inbound=$parent_dir/inbound
+dir_datasource=$parent_dir/datasource
 inotify=/usr/bin/inotifywait
 actions=CREATE,MOVED_TO,DELETE,ACCESS
 xmlfile="xml"
@@ -30,6 +31,7 @@ if ! [[ -e $log_file ]]
 		touch $log_file
 fi
 
+
 inbound_monitor() {
 	while $inotify --recursive --event $actions "$dir_inbound"
 		do
@@ -42,25 +44,33 @@ inbound_monitor() {
 						then
 							echo "Action : Call parser to $file_extension file"
 							rm -f $dir_inbound"/"$file_name;
-					
 					elif [ $file_extension == $xlsfile ]
 						then
 							echo "Action : Call parser to $file_extension file"
 							rm -f $dir_inbound"/"$file_name;
-					
 					elif [ $file_extension == $csvfile ]
 						then
 							echo "Action : Call parser to $file_extension file"
 							rm -f $dir_inbound"/"$file_name;
-					
 					else
 						echo "Action : Send push and mail file extension $file_extension not supported."
+						#test
+						export PYTHONPATH="$PYTHONPATH:/opt/projetos/Django/logger_framework/:/opt/projetos/Django/logger_framework/logger_multi_modules/:/opt/projetos/Django/rpa_datasources/addons_community/pid-3.0.4"
+						python "../main.py"
 					fi
 				done
 		done
 }
 
-inbound_monitor &
 
+datasource_monitor() {
+	while $inotify --recursive --event $actions "$dir_datasource"
+		do
+			sleep 0.7
+		done
+}
+
+
+inbound_monitor & datasource_monitor & 
 
 

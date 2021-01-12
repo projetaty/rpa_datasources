@@ -2,7 +2,10 @@
 # encoding: utf-8
     
 import logging
-from logger_multi_modules.SingleLogger import SingleLogger
+
+from logger_multi_modules.SingleLogger import SingleLogger 
+#import logger_multi_modules.SingleLogger as SL
+
 from pid.decorator import pidfile
 import os
 
@@ -12,7 +15,7 @@ import sys
 @pidfile("rpads.pid", "./bin/")
 def main(*args, **kwargs):
     try:
-        srvclog = SingleLogger(("%s.%s" %("Service Logger", __name__)), 0, "./log/global/", "service.log").logger
+        srvclog = SingleLogger(("%s.%s" %("Service Logger", __name__)), 0, "../log/global/", "service.log").logger
         srvclog.setLevel(logging.INFO)
         srvclog.info("Logger instance created.......")
         srvclog.info("Running main program....... pidg: %s"  %os.getpgid(os.getpid()))
