@@ -3,7 +3,29 @@
 SAMPLE SINGLE PROJECT FOR RPA TESTS
 ===================================================
 
+
 @TODO:
+
+
 Rethink software execution process it is not so clear in a hole;
+
+
 Implement config file for logger;
-Create json for rest from data source;
+
+
+Create test case on time consume to process thousand files of each extension;
+
+
+To execute the test case above, we should create python programming to generate dummy files with loop for a in range(); Note always avoid to use loop while;
+
+
+Compare time consume of bash using CASE against IF / ELIF;
+
+
+Do DJango modeling for consume generated data form data sources;
+
+
+Build PUSHD server;
+
+
+
