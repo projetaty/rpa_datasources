@@ -107,6 +107,6 @@ datasource_monitor() {
 }
 
 
-inbound_monitor & datasource_monitor $new_file_name & 
+inbound_monitor & datasource_monitor & 
 
 
