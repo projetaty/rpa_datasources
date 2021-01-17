@@ -1,4 +1,5 @@
 #!/bin/bash
+
 ### BEGIN INIT INFO
 # Provides:             Notify inbound folder event service
 # Short-Description:    Script part of single RPA
@@ -18,8 +19,9 @@ log_file=$bash_log_dir/datasource_notify.log
 
 know_extensions=("csv" "xml" "xls" "xlsx")
 
-
 set -e
+
+export LANG=pt_BR.UTF-8;
 
 if ! [[ -e $bash_log_dir ]]
 	then
@@ -30,6 +32,12 @@ if ! [[ -e $log_file ]]
 	then
 		touch $log_file
 fi
+
+get_file_extension() {
+	filename=$1;
+	file_extension=${filename##*.};
+	echo $file_extension;
+}
 
 gen_unique_key() {
 	sleep 1s
@@ -54,41 +62,53 @@ rename_inbound_file() {
 	echo $new_file_name
 }
 
+move_file() {
+	file_name=$1;
+	file_extension=$2;
+	newfile_name=$3;
+	mv $dir_inbound"/"$file_name $dir_datasource"/"$file_extension"/"$newfile_name;
+	return
+}
+
 inbound_monitor() {
 	while $inotify --recursive --event $actions "$dir_inbound"
 		do
 			sleep 0.7
 			#($client_ip, $client_auth_user) will be used on json rest data header
-			client_ip=$( get_client_ip );
-			echo $client_ip;
-			client_auth_user=$( get_auth_user );
-			echo $client_auth_user;
+			#client_ip=$( get_client_ip );
+			#echo $client_ip;
+			#client_auth_user=$( get_auth_user );
+			#echo $client_auth_user;
 			
 			FILES=$(ls $dir_inbound)
 			
 			for file_name in $FILES
 				do
-				  	file_extension=${file_name##*.}
+					sleep 0.7
+				  	file_extension=$( get_file_extension $file_name )
 					
 					case "${know_extensions[@]}" in 
 						*"$file_extension"* )
 							#change font color for dev proposal only
-							tput setaf 2;
+							#tput setaf 2;
 							echo "Action : Move $file_extension file to parser dir.";
 							newfile_name=$( rename_inbound_file $file_name );
 							
 							#@todo: create bash function to move files
-							mv $dir_inbound"/"$file_name $dir_datasource"/"$file_extension"/"$newfile_name;
+							#mv $dir_inbound"/"$file_name $dir_datasource"/"$file_extension"/"$newfile_name;
+							$( move_file $file_name $file_extension $newfile_name );;
+							
 							#reset font color
-							tput sgr 0;;
+							#tput sgr 0;;
 						* )
 							#change font color for dev proposal only
-							tput setaf 1;
+							#tput setaf 1;
 							echo "Action : Send push and mail notification: Extension $file_extension not supported.";
 							newfile_name=$( rename_inbound_file $file_name );
-							mv $dir_inbound"/"$file_name $dir_inbound"/.not_supported/"$newfile_name;
+							mv $dir_inbound"/"$file_name $dir_inbound"/.not_supported/"$newfile_name;;
+							
 							#reset font color
-							tput sgr 0;;
+							#tput sgr 0;;
 			  		esac
 				done
 		done
@@ -100,6 +120,7 @@ datasource_monitor() {
 		do
 			sleep 0.7
 			echo "Action : Run parser to added $new_file_name..."
+			echo $( ls -lsa )
 			#set PYTHONPATH for test proposal
 			#export PYTHONPATH="$PYTHONPATH:/opt/projetos/Django/logger_framework/:/opt/projetos/Django/logger_framework/logger_multi_modules/:/opt/projetos/Django/rpa_datasources/addons_community/pid-3.0.4"
 			#python "../main.py";;
@@ -107,6 +128,6 @@ datasource_monitor() {
 }
 
 
-inbound_monitor & datasource_monitor & 
+inbound_monitor >> $log_file & datasource_monitor >> $log_file &
 
 
