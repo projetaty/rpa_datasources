@@ -2,7 +2,7 @@
 
 SAMPLE SINGLE PROJECT FOR RPA TESTS
 ===================================================
-The python classes of this program is being re-coded to better pythonist / PEP8 patterns
+# _The python classes of this program is being re-coded to better pythonist / PEP8 patterns_
 
 @TODO:
 
